@@ -93,15 +93,16 @@ const Chat = () => {
       </div>
       <div className="messages">
         <div className="messages-content">
-          {messages.map((message, index) => (
-            <div key={index} className={`message ${message.isUser ? 'message-personal' : ''}`}>
-              <figure className="avatar">
-                <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/156381/profile/profile-80.jpg" alt="Avatar" />
-              </figure>
-              {message.content}
-              {/* {message.isUser && <span className="timestamp">{new Date().toLocaleTimeString()}</span>} */}
-            </div>
-          ))}
+        {messages.map((message, index) => (
+          <div key={index} className={`message ${message.isUser ? 'message-personal' : ''}`}>
+          {!message.isUser && (
+          <figure className="avatar">
+            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/156381/profile/profile-80.jpg" alt="Avatar" />
+          </figure>
+        )}
+      {message.content}
+      </div>
+      ))}
         </div>
         <div ref={messagesEndRef} />
       </div>

@@ -28,12 +28,16 @@ Mixins
   *,
   *::before,
   *::after {
+    
     box-sizing: border-box;
   }
   
-  html,
-  body {
-    height: 100%;
+  html, body {
+    display: flex; /* Flexbox para centralizar */
+    justify-content: center; /* Centraliza horizontalmente */
+    align-items: center; /* Centraliza verticalmente */
+    margin: 0;
+    height: 100%; /* Necessário para o alinhamento flex funcionar */
   }
   
   body {
@@ -46,6 +50,7 @@ Mixins
   }
   
   .bg {
+    position: absolute;
     width: 100%;
     height: 100%;
     top: 0;
@@ -61,10 +66,10 @@ Mixins
   Chat
   --------------------*/
   .chat {
-    @include center;
-    width: 300px;
-    height: 80vh;
-    max-height: 500px;
+    @include center; /* Ative o mixin para centralizar */
+    width: 500px;
+    height: 100vh;
+    max-height: 700px;
     z-index: 2;
     overflow: hidden;
     box-shadow: 0 5px 30px rgba(0, 0, 0, .2);
@@ -80,7 +85,7 @@ Mixins
   Chat Title
   --------------------*/
   .chat-title {
-    flex: 0 1 45px;
+    flex: 0 1 60px;
     position: relative;
     z-index: 2;
     background: rgba(0, 0, 0, 0.2);
@@ -91,14 +96,14 @@ Mixins
     
     h1, h2 {
       font-weight: normal;
-      font-size: 10px;
+      font-size: 15px;
       margin: 0;
       padding: 0;
     }
     
     h2 {
       color: rgba(255, 255, 255, .5);
-      font-size: 8px;
+      font-size: 10px;
       letter-spacing: 1px;
     }
     
@@ -132,12 +137,14 @@ Mixins
     overflow: hidden;
     position: relative;
     width: 100%;
+    overflow-y: auto;
     
     & .messages-content {
       position: absolute;
       top: 0;
       left: 0;
       height: 101%;
+      /* overflow-y: auto; */
       width: 100%;
     }
   
@@ -149,7 +156,7 @@ Mixins
       border-radius: 10px 10px 10px 0;
       background: rgba(0, 0, 0, .3);
       margin: 8px 0;
-      font-size: 11px;
+      font-size: 15px;
       line-height: 1.4;
       margin-left: 35px;
       position: relative;
@@ -157,8 +164,8 @@ Mixins
       
       .timestamp {
         position: absolute;
-        bottom: -15px;
-        font-size: 9px;
+        bottom: -10px;
+        font-size: 10px;
         color: rgba(255, 255, 255, .3);
       }
       
@@ -253,10 +260,10 @@ Mixins
   Message Box
   --------------------*/
   .message-box {
-    flex: 0 1 40px;
+    flex: 0 1 50px;
     width: 100%;
     background: rgba(0, 0, 0, 0.3);
-    padding: 10px;
+    padding: 13px;
     position: relative;
     
     & .message-input {
@@ -265,11 +272,11 @@ Mixins
       outline: none!important;
       resize: none;
       color: rgba(255, 255, 255, .7);
-      font-size: 11px;
-      height: 17px;
+      font-size: 13px;
+      height: 27px;
       margin: 0;
       padding-right: 20px;
-      width: 265px;
+      width: 270px;
     }
     
     textarea:focus:-webkit-placeholder{

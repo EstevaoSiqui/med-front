@@ -6,38 +6,87 @@ const Chat = () => {
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
-    // Scroll to bottom on message update
-    messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    const chatContainer = document.querySelector('.messages');
+    if (chatContainer) {
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
   }, [messages]);
 
-  const sendMessage = () => {
-    const messageInput = document.getElementById('messageInput');
+  const sendMessage = async () => {
+    const messageInput = document.getElementById("messageInput");
     const msg = messageInput.value.trim();
-
+  
     if (msg) {
-      setMessages([...messages, { content: msg, isUser: true }]);
-      messageInput.value = '';
-
-      // Simulate fake response (optional)
-      setTimeout(() => {
-        setMessages([...messages, { content: getFakeMessage(), isUser: false }]);
-      }, 1000);
+      // Adiciona a mensagem do usuário no estado
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { content: msg, isUser: true },
+      ]);
+      messageInput.value = "";
+  
+      try {
+        // Faz a requisição ao backend
+        const response = await fetch("http://localhost:6543/invoke", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            input: { input: msg },
+            config: { configurable: { session_id: "teste1" } },
+            kwargs: {},
+          }),
+        });
+  
+        if (!response.ok) {
+          throw new Error("Erro ao conectar ao backend.");
+        }
+  
+        const data = await response.json();
+  
+        // Adiciona a resposta do backend no estado
+        if (data.output.answer) {
+          setMessages((prevMessages) => [
+            ...prevMessages,
+            { content: data.output.answer, isUser: false },
+          ]);
+        } else {
+          console.error("Resposta inesperada do backend:", data);
+        }
+      } catch (error) {
+        console.error("Erro ao enviar a mensagem:", error);
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          { content: "Erro ao processar a resposta.", isUser: false },
+        ]);
+      }
     }
   };
 
-  const getFakeMessage = () => {
-    const Fake = [
-      // Your fake message array here
-    ];
-    const randomIndex = Math.floor(Math.random() * Fake.length);
-    return Fake[randomIndex];
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault(); // Prevents a new line in the textarea
+      sendMessage(); // Call the send message function
+    }
   };
+
+  // const getFakeMessage = () => {
+  //   const Fake = [
+  //     'Hello!',
+  //     'How can I help you?',
+  //     'What are you looking for?',
+  //     'Let me know if you have questions!',
+  //   ];
+  //   const randomIndex = Math.floor(Math.random() * Fake.length);
+  //   return Fake[randomIndex];
+  // };
 
   return (
     <div className="chat">
       <div className="chat-title">
-        <h1>Fabio Ottaviani</h1>
-        <h2>Supah</h2>
+        <h1>João</h1>
+        <h2>AI agent</h2>
         <figure className="avatar">
           <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/156381/profile/profile-80.jpg" alt="Avatar" />
         </figure>
@@ -50,14 +99,20 @@ const Chat = () => {
                 <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/156381/profile/profile-80.jpg" alt="Avatar" />
               </figure>
               {message.content}
-              {message.isUser && <span className="timestamp">{new Date().toLocaleTimeString()}</span>}
+              {/* {message.isUser && <span className="timestamp">{new Date().toLocaleTimeString()}</span>} */}
             </div>
           ))}
         </div>
         <div ref={messagesEndRef} />
       </div>
       <div className="message-box">
-        <textarea id="messageInput" type="text" className="message-input" placeholder="Type message..." />
+        <textarea
+          id="messageInput"
+          type="text"
+          className="message-input"
+          placeholder="Type message..."
+          onKeyDown={handleKeyDown} // Add the event listener here
+        />
         <button type="submit" className="message-submit" onClick={sendMessage}>
           Send
         </button>

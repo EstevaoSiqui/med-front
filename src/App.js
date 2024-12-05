@@ -1,8 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { v4 as uuidv4 } from 'uuid'; // Importe o gerador de UUID
 import './Chat.css'; // Import your CSS file
 
 const Chat = () => {
   const [messages, setMessages] = useState([]);
+  const [sessionId] = useState(uuidv4()); // Gere o UUID no carregamento
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -26,14 +28,14 @@ const Chat = () => {
   
       try {
         // Faz a requisição ao backend
-        const response = await fetch("http://localhost:6543/invoke", {
+        const response = await fetch("http://66.179.240.12:6543/invoke", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
             input: { input: msg },
-            config: { configurable: { session_id: "teste1" } },
+            config: { configurable: { session_id: sessionId } },
             kwargs: {},
           }),
         });
